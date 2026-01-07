@@ -1,4 +1,17 @@
 #!/usr/bin/env python3
+import pytest
+from app import app, db
+
+
+@pytest.fixture(scope='function', autouse=True)
+def setup_db():
+    """Set up and tear down test database"""
+    with app.app_context():
+        db.create_all()
+        yield
+        db.session.remove()
+        db.drop_all()
+
 
 def pytest_itemcollected(item):
     par = item.parent.obj
